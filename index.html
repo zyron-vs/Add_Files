@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tor Protocol | Final Responsive Architecture</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    /* ------------------------------------------------------------------
+       1. THEME VARIABLES - TRUE DARK MINIMALISM
+    ------------------------------------------------------------------ */
+    :root {
+        --bg-deep: #000000;
+        --bg-card: #080808;
+        --border-subtle: #1A1A1A;
+        --border-highlight: #333333;
+        --text-main: #FFFFFF;
+        --text-muted: #999999;
+        
+        --accent-glow: 120, 119, 198;
+        --brand-gradient: linear-gradient(180deg, #fff, #adadad);
+    }
+
+    /* ------------------------------------------------------------------
+       2. BASE STYLES & FONT SCALING
+    ------------------------------------------------------------------ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html {
+        scroll-behavior: smooth;
+        font-size: 100%; 
+    }
+    
+    body {
+        background-color: var(--bg-deep);
+        color: var(--text-main);
+        font-family: 'Inter', sans-serif;
+        line-height: 1.6;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        text-align: center;
+    }
+
+    .grid-background {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: linear-gradient(var(--border-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
+        background-size: 50px 50px;
+        opacity: 0.15;
+        z-index: -1;
+        pointer-events: none;
+        mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+    }
+
+    /* ------------------------------------------------------------------
+       3. NAVIGATION (STICKY & RESPONSIVE PADDING)
+    ------------------------------------------------------------------ */
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px clamp(20px, 5vw, 40px);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        backdrop-filter: blur(12px);
+        background: rgba(0,0,0,0.75);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .logo {
+        font-weight: 700;
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+        color: white;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .nav-btn {
+        background: white;
+        color: black;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: opacity 0.3s;
+    }
+
+    /* ------------------------------------------------------------------
+       4. HERO SECTION (FLUID TYPOGRAPHY)
+    ------------------------------------------------------------------ */
+    .hero {
+        min-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 100px 20px 60px;
+        position: relative;
+    }
+
+    h1 {
+        font-size: clamp(2.8rem, 6vw, 5rem); 
+        font-weight: 800;
+        letter-spacing: -2px;
+        margin-bottom: 25px;
+        background: var(--brand-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1.1;
+        max-width: 900px;
+    }
+
+    .hero p {
+        color: var(--text-muted);
+        font-size: clamp(1rem, 3vw, 1.2rem); 
+        max-width: 600px;
+        font-weight: 300;
+        margin: 0 auto 40px;
+    }
+
+    .onion-badge {
+        border: 1px solid var(--border-subtle);
+        background: rgba(255,255,255,0.03);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+        display: inline-block;
+        backdrop-filter: blur(5px);
+    }
+
+    /* ------------------------------------------------------------------
+       5. BENTO GRID LAYOUT (RESPONSIVE GRID LOGIC)
+    ------------------------------------------------------------------ */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 100px clamp(15px, 5vw, 20px);
+    }
+
+    .section-title {
+        font-size: clamp(1.8rem, 4vw, 2.2rem);
+        font-weight: 700;
+        margin-bottom: 50px;
+    }
+
+    .bento-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        text-align: left;
+    }
+    
+    @media (min-width: 768px) {
+        .bento-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .card-large {
+            grid-column: span 2;
+            grid-row: auto;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .bento-grid {
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: auto auto;
+        }
+        .card-large {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+    }
+
+    .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 12px;
+        padding: 30px;
+        height: 100%;
+        transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .card:hover {
+        border-color: var(--border-highlight);
+        transform: translateY(-2px);
+    }
+
+    .card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: #fff;
+    }
+
+    .card p {
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        color: var(--text-muted);
+        line-height: 1.7;
+    }
+
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        background: #1A1A1A;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-bottom: 20px;
+        border: 1px solid var(--border-subtle);
+    }
+    
+    /* List Styling for Technical Features Card */
+    .feature-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 20px;
+        /* Fix: Resetting list-style inside the card */
+    }
+    
+    .feature-list li {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 12px;
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        font-weight: 500;
+    }
+
+    .feature-list i {
+        color: #10B981; 
+        margin-right: 12px;
+        font-size: 0.8rem;
+        margin-top: 5px; /* Alignment fix */
+    }
+
+
+    /* ------------------------------------------------------------------
+       6. DIAGRAM STYLING (Corrected layout to fix overlap)
+    ------------------------------------------------------------------ */
+    .card-large { 
+        min-height: 250px; 
+        padding-bottom: 50px; /* Ensuring space at the bottom */
+    }
+    
+    .diagram-description { /* NEW CLASS for the description */
+        text-align: left;
+        margin-bottom: 20px;
+        padding-top: 0; /* Remove top padding for better flow */
+    }
+
+    .diagram-container {
+        width: 100%;
+        height: 180px;
+        position: relative;
+        padding: 0 5%;
+        margin-top: 30px;
+    }
+    /* ... (Rest of diagram styles are retained) ... */
+    
+    .connection-line {
+        position: absolute;
+        height: 2px;
+        background: #333;
+        width: 90%;
+        left: 5%;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 0;
+    }
+
+    .data-packet {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: white;
+        border-radius: 50%;
+        top: 50%;
+        left: 10%;
+        transform: translateY(-50%);
+        box-shadow: 0 0 10px white;
+        animation: travel 4s infinite linear;
+        z-index: 2;
+    }
+    
+    .data-packet:nth-child(2) { animation-delay: 1.3s; }
+    .data-packet:nth-child(3) { animation-delay: 2.6s; }
+
+    @keyframes travel {
+        0% { left: 10%; opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { left: 90%; opacity: 0; }
+    }
+
+    .node {
+        width: 50px;
+        height: 50px;
+        background: #000;
+        border: 1px solid #444;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 3;
+        position: relative;
+    }
+    
+    .node i { color: #fff; font-size: 1.1rem; }
+
+    .node-wrapper {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        position: relative;
+        z-index: 5;
+    }
+    
+    .node-label {
+        position: absolute;
+        top: 60px;
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        text-align: center;
+        width: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    @media (min-width: 600px) {
+        .node { width: 60px; height: 60px; }
+        .node-label { font-size: 0.75rem; top: 70px; }
+    }
+    
+    /* Fix: Ensure text in list wraps correctly and bolding is clear */
+    .feature-list li strong {
+        color: var(--text-main); /* Highlight the bold text */
+        font-weight: 700;
+        margin-right: 5px;
+    }
+    
+</style>
+</head>
+<body>
+
+    <div class="grid-background"></div>
+
+    <nav>
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i> Tor Protocol
+        </div>
+        <a href="https://www.torproject.org/" class="nav-btn">Get Tor Browser</a>
+    </nav>
+
+    <header class="hero">
+        <div class="ambient-light"></div>
+        <span class="onion-badge">V3 ONION SERVICES ARCHITECTURE</span>
+        <h1>Anonymity<br>Redefined.</h1>
+        <p>Defend yourself against tracking and surveillance with the world's most advanced privacy network architecture.</p>
+    </header>
+
+    <main class="container">
+        <h2 class="section-title">Technical Architecture</h2>
+        
+        <div class="bento-grid">
+            
+            <div class="card card-large">
+                <div class="diagram-description"> 
+                    <h3>Onion Routing</h3>
+                    <p style="font-size:0.8rem; color:#666;">Encrypted Circuit Visualization</p>
+                </div>
+                
+                <div class="diagram-container">
+                    <div class="connection-line"></div>
+                    <div class="data-packet"></div>
+                    <div class="data-packet"></div>
+                    <div class="data-packet"></div>
+                    
+                    <div class="node-wrapper">
+                        <div style="position:relative">
+                            <div class="node"><i class="fas fa-laptop"></i></div>
+                            <span class="node-label">Client</span>
+                        </div>
+                        
+                        <div style="position:relative">
+                            <div class="node" style="border-color: #555;"><i class="fas fa-arrow-right"></i></div>
+                            <span class="node-label">Entry Guard</span>
+                        </div>
+                        
+                        <div style="position:relative">
+                            <div class="node" style="border-color: #555;"><i class="fas fa-random"></i></div>
+                            <span class="node-label">Relay</span>
+                        </div>
+                        
+                        <div style="position:relative">
+                            <div class="node" style="border-color: #fff;"><i class="fas fa-external-link-alt"></i></div>
+                            <span class="node-label">Exit Node</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon" style="background: #1A1A1A; border: 1px solid var(--border-highlight);"><i class="fas fa-book"></i></div>
+                <h3>Advanced Security Protocols</h3>
+                <p>Tor's software implements several key methods to protect identity beyond the network layer:</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> <strong>Isolation:</strong> New circuit for every domain.</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>Standardization:</strong> Blocks Canvas/WebRTC fingerprinting.</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>No Script:</strong> Restricts high-risk JavaScript features.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-fingerprint"></i></div>
+                <h3>Anti-Fingerprinting</h3>
+                <p>Standardized browser attributes make all Tor users look identical to trackers, eliminating browser fingerprinting.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-globe"></i></div>
+                <h3>Decentralized Network</h3>
+                <p>Traffic is bounced through thousands of volunteer-run relays worldwide to ensure no single entity controls the path.</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-user-secret"></i></div>
+                <h3>Zero Knowledge Principle</h3>
+                <p>Relays do not know both the origin and destination of the traffic simultaneously, maximizing user anonymity.</p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer style="text-align: center; padding: 40px; color: #444; font-size: 0.8rem; border-top: 1px solid var(--border-subtle);">
+        <p>&copy; 2025 Tor Architecture Visualization. Designed for Privacy.</p>
+    </footer>
+
+</body>
+</html>
